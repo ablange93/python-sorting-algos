@@ -1,35 +1,41 @@
-from random import randrange
+from random import randrange, shuffle
 
 def quicksort(list, start, end):
   # BASE CASE #
   if start >= end:
     return
   
-  # Define pivot variable and swap with last element
+  # Define random pivot and swap with last element
   pivot_idx = randrange(start, end)
   pivot_element = list[pivot_idx]
   list[end], list[pivot_idx] = list[pivot_idx], list[end]
   
-  # Create the lesser_than_pointer
+  # create pointer used to track all values lesser than pivot (all go to the left)
   lesser_than_pointer = start
-  # Start a for loop, use 'idx' as the variable
-  for idx in range(start, end):
-    # Check if the value at idx is less than the pivot
-    if list[idx] < pivot_element:
-      # Then swap lesser_than_pointer and idx values
-      list[lesser_than_pointer], list[idx] = list[idx], list[lesser_than_pointer]
-      # increment lesser_than_pointer
+  
+  for i in range(start, end):
+    # if there's an element out of place
+    if list[i] < pivot_element:
+      # Then swap element with end of portion of lesser elements
+      list[lesser_than_pointer], list[i] = list[i], list[lesser_than_pointer]
+      # increment counter so we know we have one more lesser element
       lesser_than_pointer += 1
           
-  # Finally swap pivot with value at lesser_than_pointer. #
+  # move pivot element to the end of portion of lesser elements. 
   list[end], list[lesser_than_pointer] = list[lesser_than_pointer], list[end]
   
   # INDUCTIVE STEP #
-  print(list[start])
-  start += 1
-  quicksort(list, start, end)
+  # Recursively call quicksort left & right sub-lists.
+  # left sub-list
+  quicksort(list, start, lesser_than_pointer - 1)
+  # right sub-list
+  quicksort(list, lesser_than_pointer + 1, end)
   
-my_list = [42, 103, 22]
-print("BEFORE: ", my_list)
-sorted_list = quicksort(my_list, 0, len(my_list) - 1)
-print("AFTER: ", sorted_list)
+### TEST ###  
+unsorted_list = [3,7,12,24,36,15,89, 92, 96, 98, 94, 42, 112, 117, 111]
+shuffle(unsorted_list)
+print(unsorted_list)
+
+# sort list using quicksort() then print
+quicksort(unsorted_list, 0, len(unsorted_list) - 1)
+print(unsorted_list)
